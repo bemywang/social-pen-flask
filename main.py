@@ -1,5 +1,6 @@
 from datetime import datetime
 from dotenv import dotenv_values
+import os
 
 import requests
 from flask import Flask, render_template, request
@@ -9,10 +10,16 @@ import json
 
 app = Flask(__name__)
 
+app.config['COLOR'] = os.environ.get('COLOR')
+print(app.config['COLOR'])
 
-config = dotenv_values(".env")
-print(config["COLOR"])
-openai.api_key = config["OPENAI_API_KEY"]
+app.config['OPENAI_API_KEY'] = os.environ.get('OPENAI_API_KEY')
+openai.api_key = app.config["OPENAI_API_KEY"]
+
+
+# config = dotenv_values(".env")
+# print(config["COLOR"])
+# openai.api_key = config["OPENAI_API_KEY"]
 # print(__name__)
 
 def get_post(msg):
@@ -29,7 +36,7 @@ def get_post(msg):
 
 def get_image(msg):
     res = openai.Image.create (
-        prompt=f"generate an image based on the situation:{msg}, with simple background and ready for social media style.",
+        prompt=f"generate an image based on the situation:{msg},with natural photo style.",
         size='512x512',
         n=1
     )
@@ -62,6 +69,6 @@ def result_route():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
 
 
